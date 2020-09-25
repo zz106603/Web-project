@@ -7,9 +7,9 @@
 <h4>display</h4>
 
 - 블록(block) : 언제나 새로운 라인에서 시작
-  - /* <div>, <h1>, <p>, <ul>, <ol>,<form> */
+  - div, h1, p, ul, ol, form
 - 인라인(inline) : 새로운 라인에서 시작하지 않음
-  - /* <span>,<a>,<img> */
+  - span, a, img
 - display 기본 속성값이 블록인 요소 -> 인라인으로 변경 가능
 
 
