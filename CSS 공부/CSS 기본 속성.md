@@ -16,11 +16,10 @@
   - right top
   - left bottom
   - right center
-  - ..
+  - ...
 - background-attachment : fixed **(배경 고정)**
 
 <h3>css 텍스트
-
 ---
 
 - color : red;
@@ -69,7 +68,6 @@
   - 20px [절대적]
 
 <h3>css 링크
-
 ---
 
 - color, font-family, background 등 다양한 속성들 적용 가능
@@ -118,7 +116,6 @@
 
 
 <h3>css 리스트
-
 ---
 
 - list-style-type : **(다양한 마커(marker) 적용)**
@@ -153,7 +150,6 @@
 
 
 <h3>css 테이블
-
 ---
 
 - table, th, td {border : 2px solid black;} **(테이블 테두리 설정)**
@@ -184,7 +180,6 @@
 
 
 <h3>css 이미지 스프라이트
-
 ---
 
 - 여러 개의 이미지를 하나의 이미지로 합쳐서 관리하는 이미지를 의미
