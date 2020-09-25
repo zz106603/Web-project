@@ -19,8 +19,10 @@
   - ...
 - background-attachment : fixed **(배경 고정)**
 
-<h3>css 텍스트
+<h3>css 텍스트</h3>
+
 ---
+
 
 - color : red;
 - direction : rtl; **(텍스트가 써지는 방향 설정)** 
@@ -38,7 +40,6 @@
   - line-through [가운데 줄]
   - underline [밑줄]
   - none [링크에 생기는 밑줄 제거]
-
 - text-transform : **(대소문자 설정)**
   - uppercase
   - lowercase
@@ -67,8 +68,10 @@
   - 2.5em
   - 20px [절대적]
 
-<h3>css 링크
+<h3>css 링크</h3>
+
 ---
+
 
 - color, font-family, background 등 다양한 속성들 적용 가능
 
@@ -115,21 +118,20 @@
 
 
 
-<h3>css 리스트
+<h3>css 리스트</h3>
+
 ---
+
 
 - list-style-type : **(다양한 마커(marker) 적용)**
   - circle
   - square
   - upper-alpha
   - lower-roman
-
 - list-style-image : url("~~.png"); **(marker로 자신만의 이미지 사용 가능)**
-
 - list-style-position : **(요소의 위치 설정)**
   - outside [기본설정]
   - inside
-
 - 한 번에 적용
 
 
@@ -149,20 +151,19 @@
 
 
 
-<h3>css 테이블
+<h3>css 테이블</h3>
+
 ---
+
 
 - table, th, td {border : 2px solid black;} **(테이블 테두리 설정)**
   - table, th, td에서 테두리가 두줄씩 나타나는 것 방지 ↙
   - border-collapse : collapse;
-
 - border-spacing : 20px 30px **(th, td간의 여백 설정)**
-
 - vertical-align **(th, td 내부에서 수직 방향 정렬 설정)**
 
   - top; height : 50px;
   - bottom; height : 50px;
-
 - border-bottom **(th, td태그에 사용하여 수평 나눔선만으로 만든 테이블)**
 
 
@@ -179,8 +180,10 @@
 
 
 
-<h3>css 이미지 스프라이트
+<h3>css 이미지 스프라이트</h3>
+
 ---
+
 
 - 여러 개의 이미지를 하나의 이미지로 합쳐서 관리하는 이미지를 의미
 
