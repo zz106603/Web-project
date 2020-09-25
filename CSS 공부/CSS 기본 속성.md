@@ -76,19 +76,21 @@
 - color, font-family, background 등 다양한 속성들 적용 가능
 
 
-    <style>
-    	a {
-    	    background-color: #FFFFE0;
-        	color: darkslategray;
-    	    font-size: 1.3em;
-    	    text-decoration: none;
-    	}
-    
-    	a:link { color: olive; }
-    	a:visited { color: brown; }
-    	a:hover { color: coral; }
-    	a:active { color: khaki; }
-    </style>
+```html
+<style>
+	a {
+	    background-color: #FFFFE0;
+    	color: darkslategray;
+	    font-size: 1.3em;
+	    text-decoration: none;
+	}
+
+	a:link { color: olive; }
+	a:visited { color: brown; }
+	a:hover { color: coral; }
+	a:active { color: khaki; }
+</style>
+```
 
 - a:link {color : blue}
   - 링크의 기본상태이며 한 번도 해당 링크를 통해 연결된 페이지를 방문하지 않은 상태
@@ -104,17 +106,19 @@
 - 링크를 버튼처럼 만들기
 
 
-    <style>
-    	a:link, a:visited {
-    	    background-color: #FFA500;
-    	    color: maroon;
-    	    padding: 15px 25px;
-    	    text-align: center;
-    	    text-decoration: none;
-    	    display: inline-block;
-    	}
-    	a:hover, a:active { background-color: #FF4500; }
-    </style>
+```html
+<style>
+	a:link, a:visited {
+	    background-color: #FFA500;
+	    color: maroon;
+	    padding: 15px 25px;
+	    text-align: center;
+	    text-decoration: none;
+	    display: inline-block;
+	}
+	a:hover, a:active { background-color: #FF4500; }
+</style>
+```
 
 
 
@@ -135,19 +139,23 @@
 - 한 번에 적용
 
 
-    <style>
-    	ul { list-style: square inside url("/examples/images/img_list_marker.png"); }
-    </style>
+```html
+<style>
+	ul { list-style: square inside url("/examples/images/img_list_marker.png"); }
+</style>
+```
 
 - 리스트 요소별 배경색 설정
 
 
-    <style>
-    	ul { background: #D2691E; padding: 15px; }
-    	ol { background: #6495ED; padding: 15px; }
-    	ul li { background: #DEB887; margin: 5px; }
-    	ol li { background: #00FFFF; margin-left: 15px; }
-    </style>
+```html
+<style>
+	ul { background: #D2691E; padding: 15px; }
+	ol { background: #6495ED; padding: 15px; }
+	ul li { background: #DEB887; margin: 5px; }
+	ol li { background: #00FFFF; margin-left: 15px; }
+</style>
+```
 
 
 
@@ -188,14 +196,16 @@
 - 여러 개의 이미지를 하나의 이미지로 합쳐서 관리하는 이미지를 의미
 
 
-    <style>
-    	.up, .down, .right, .left { 
-    		background: url("/examples/images/img_image_sprites.png") no-repeat; 
-    	}
-    
-    	.up { width: 21px; height: 20px; background-position: 0 0; }
-    	.down { width: 21px; height: 20px; background-position: -21px 0; }
-    	.right { width: 22px; height: 20px; background-position: -42px 0; }
-    	.left { width: 22px; height: 20px; background-position: -65px 0; }
-    </style>
+```html
+<style>
+	.up, .down, .right, .left { 
+		background: url("/examples/images/img_image_sprites.png") no-repeat; 
+	}
+
+	.up { width: 21px; height: 20px; background-position: 0 0; }
+	.down { width: 21px; height: 20px; background-position: -21px 0; }
+	.right { width: 22px; height: 20px; background-position: -42px 0; }
+	.left { width: 22px; height: 20px; background-position: -65px 0; }
+</style>
+```
 
