@@ -1,0 +1,148 @@
+
+  .layout{
+    border: 5px solid green;
+    border-top: none;
+  }
+
+ /*Home*/
+  #menu{
+    border : 5px solid green;
+    padding : 10px;
+    height: 55px;
+
+  }
+
+  #menu ul {
+    float : right;
+    margin : 0;
+    padding: 10px;
+    overflow: hidden;
+    width : 500px;
+
+  }
+ #menu ul li {
+   display : inline-block;
+   background-color : lightgray;
+   border : 1px solid black;
+   width : 100px;
+   padding : 5px;
+   text-align : center;
+   box-shadow: 3px 3px 5px black;
+ }
+
+ #menu ul li a{
+   display: inline-block;
+   width : 100px;
+   text-align: center;
+   text-decoration: none;
+   color : black;
+ }
+
+#content{
+  border : 5px solid green;
+  border-top : none;
+  text-align : center;
+
+}
+
+#content h2{
+  margin : 0;
+  padding-top : 20px;
+}
+
+#content ul{
+  list-style-type: none;
+  padding : 0;
+}
+#content ul li{
+  background-color: lightgray;
+  display : inline-block;
+  border : 1px solid black;
+  width : 100px;
+  height: 100px;
+  text-align: center;
+  box-shadow: 5px 5px 10px black;
+}
+
+#content ul li a{
+  width: 100px;
+	height: 100px;
+	display: inline-block;
+	text-align: center;
+	line-height: 100px;
+  text-decoration: none;
+  color : black;
+}
+
+#content img{
+  border : 1px solid lightgray;
+  margin-bottom: 20px;
+  width : 700px;
+  height : 500px;
+}
+
+footer{
+  border : 5px solid green;
+  border-top: none;
+  text-align: center;
+}
+
+footer p{
+  margin : 0;
+  padding : 10px;
+}
+
+/* 자기소개 */
+
+#content2{
+  border : 5px solid green;
+  border-top : none;
+
+}
+#content2 .contentHe{
+  padding-top: 30px;
+  padding-left: 100px;
+  padding-right: 150px;
+  padding-bottom: 30px;
+}
+#content2 .contentHe:nth-child(3){
+  padding-top: 15px;
+  padding-left: 100px;
+  padding-right: 150px;
+  padding-bottom: 30px;
+}
+
+#content2 h2, p{
+  margin : 0;
+  padding : 0;
+}
+
+#content2 a{
+  text-decoration: none;
+}
+
+/* 사진 */
+
+#content3{
+  border : 5px solid green;
+  border-top : none;
+}
+
+#content3 img{
+  border : 7px solid gray;
+  width : 400px;
+  height : auto;
+}
+
+#content3 .wrap{
+  margin-left: 20px;
+  margin-right: 20px;
+  padding : 50px;
+  display : grid;
+  grid-template-columns: 450px 1fr;
+  border-bottom: 1px solid gray;
+}
+
+#content3 .wrap p{
+  line-height: 30px;
+}
