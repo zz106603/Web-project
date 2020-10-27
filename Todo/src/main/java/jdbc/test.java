@@ -12,7 +12,7 @@ public class test {
 		
 		TodoDao dao = new TodoDao();
 		List<TodoDto> dto = new ArrayList<>(); 
-		dto = dao.getTodos("todo");
+		dto = dao.getTodos();
 		
 		System.out.println(dto);
 

@@ -6,12 +6,6 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="kr.or.connect.jdbc.TodoDto"%>
 
-<%
-	List<TodoDto> todolist = (List<TodoDto>) request.getAttribute("todolist");
-	List<TodoDto> doinglist = (List<TodoDto>) request.getAttribute("doinglist");
-	List<TodoDto> donelist = (List<TodoDto>) request.getAttribute("donelist");
-%>
-
 
 <!DOCTYPE html>
 <html>
@@ -24,87 +18,84 @@
 
 <body>
 
-<div class="side">
-	<header>
-		<form method="GET" action="write">
-			<button id="button-sign">TODO 작성하기</button>
-		</form>
-	</header>
-
-	<section class="title">
-		<h2>나의 해야할 일들</h2>
-	</section>
-
-	<div id="table-align">
-	<section id="todo">
-		<div class="todo-head"><h2>TODO</h2></div>
-		<c:forEach var="todolist" items="${todolist}">
-			<form action="type" method="get">
-				<div class="value-box">
-					<h2 class="title-margin"><c:out value="${todolist.title}" /></h2>
-					<br> 등록날짜:
-					<c:out value="${todolist.regdate}" />
-					,
-					<c:out value="${todolist.name}" />
-					, 우선순위
-					<c:out value="${todolist.sequence}" />
-					<br>
-					<c:out value="${todolist.type}" />
-					<input type="hidden" name="id" value="${todolist.id }"></input>
- 					<input type="hidden" name="type" value="${todolist.type }"></input> 
-					<button class="move">-></button>
-				</div>
+	<div class="side">
+		<header>
+			<form method="GET" action="write">
+				<button id="button-sign">TODO 작성하기</button>
 			</form>
-		</c:forEach>
-	</section>
+		</header>
 
-	<section id="doing">
-		<div class="doing-head"><h2>DOING</h2></div>
-		<c:forEach var="doinglist" items="${doinglist}">
-			<form action="type" method="get">
-				<div class="value-box">
-					<h2 class="title-margin"><c:out value="${doinglist.title}" /></h2>
-					<br> 등록날짜:
-					<c:out value="${doinglist.regdate}" />
-					,
-					<c:out value="${doinglist.name}" />
-					, 우선순위
-					<c:out value="${doinglist.sequence}" />
-					<br>
-					<c:out value="${doinglist.type}" />
-					<input type="hidden" name="id" value="${doinglist.id }"></input>
- 					<input type="hidden" name="type" value="${doinglist.type }"></input> 
-					<button class="move">-></button>
+		<section class="title">
+			<h2>나의 해야할 일들</h2>
+		</section>
+
+		<div id="table-align">
+
+			<!-- type이 "TODO"인 것만  -->
+			<section id="todo">
+				<div class="todo-head">
+					<h2>TODO</h2>
 				</div>
-			</form>
-		</c:forEach>
-	</section>
+				<c:forEach var="todo" items="${list}">
+					<c:if test="${todo.getType() eq 'TODO' }">
+						<div class="value-box">
+							<h2 class="title-margin">${todo.getTitle() }</h2>
+							<br>
+							등록날짜 : ${todo.getRegdate() }, ${todo.getName() } 우선순위 : ${todo.getSequence() }
+							<button id="${todo.getId()}#${todo.getType()}" class="move"	onclick="next(id)">-></button>
+							<button id="${todo.getId()}#${todo.getType()}" class="move"	onclick="deleteTodo(id)">X</button>
+						</div>
+					</c:if>
+				</c:forEach>
 
-	<section id="done">
-		<div class="done-head"><h2>DONE</h2></div>
-		<c:forEach var="donelist" items="${donelist}">
-			<div class="value-box">
-				<h2 class="title-margin"><c:out value="${donelist.title}" /></h2>
-				<br> 등록날짜:
-				<c:out value="${donelist.regdate}" />
-				,
-				<c:out value="${donelist.name}" />
-				, 우선순위
-				<c:out value="${donelist.sequence}" />
-				<br>
-				<c:out value="${donelist.type}" />
-			</div>
-		</c:forEach>
-	</section>
+			</section>
 
-</div>
+			<!-- type이 "DOING"인 것만  -->
+			<section id="doing">
+				<div class="todo-head">
+					<h2>DOING</h2>
+				</div>
+				<c:forEach var="doing" items="${list}">
+					<c:if test="${doing.getType() eq 'DOING' }">
+						<div class="value-box">
+							<h2 class="title-margin">${doing.getTitle() }</h2>
+							<br>
+							등록날짜 : ${doing.getRegdate() }, ${doing.getName() } 우선순위 : ${doing.getSequence() }
+							<button id="${doing.getId()}#${doing.getType()}}" class="move" onclick="next(id)">-></button>
+							<button id="${doing.getId()}#${doing.getType()}}" class="move"	onclick="deleteTodo(id)">X</button>
+						</div>
+					</c:if>
+				</c:forEach>
+			</section>
 
-</div>
+			<!-- type이 "DONE"인 것만  -->
+			<section id="done">
+				<div class="todo-head">
+					<h2>DONE</h2>
+				</div>
+				<c:forEach var="done" items="${list}">
+					<c:if test="${done.getType() eq 'DONE' }">
+						<div class="value-box">
+							<h2 class="title-margin">${done.getTitle() }</h2>
+							<br>
+							등록날짜 : ${done.getRegdate() }, ${done.getName() } 우선순위 : ${done.getSequence() }
+							<button id="${done.getId()}#${done.getType()}}" class="move" onclick="deleteTodo(id)">X</button>
+						</div>
+					</c:if>
+				</c:forEach>
+			</section>
+
+		</div>
+
+	</div>
 
 
 
 </body>
+<script type="text/javascript" src="./main.js?v=<%=System.currentTimeMillis() %>">
 
+	
+</script>
 
 </html>
 

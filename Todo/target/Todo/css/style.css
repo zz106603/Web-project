@@ -16,31 +16,31 @@
     display: flex;
 }
 
-#TODO {
+#todo {
     flex:1;
     width:30%;
     box-sizing: border-box;
 }
 
-#DOING{
+#doing{
     flex:1;
     margin: 0px 1%;
     width:30%;
     box-sizing: border-box;
 }
 
-#DONE{
+#done{
     flex:1;
     width:30%;
     box-sizing: border-box;
 }
 
-#TODO{
+#todo{
 	margin-left : 100px;
 }
 
 
-.todo-head{
+.todo-head, .doing-head, .done-head{
   background-color: green;
   padding : 10px;
 }

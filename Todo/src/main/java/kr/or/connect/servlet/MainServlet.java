@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.or.connect.jdbc.TodoDao;
 import kr.or.connect.jdbc.TodoDto;
 
@@ -26,29 +28,15 @@ public class MainServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		TodoDao dao = new TodoDao();
+		List<TodoDto> list = new ArrayList<TodoDto>();
+		list = dao.getTodos();
 		
-		List<TodoDto> todolist = new ArrayList<>(); 
-		todolist = dao.getTodos("TODO");
+		request.setAttribute("list", list);
 		
-		List<TodoDto> doinglist = new ArrayList<>(); 
-		doinglist = dao.getTodos("DOING");
-		
-		List<TodoDto> donelist = new ArrayList<>(); 
-		donelist = dao.getTodos("DONE");
-
-		
-		request.setAttribute("todolist", todolist);
-		request.setAttribute("doinglist", doinglist);
-		request.setAttribute("donelist", donelist);
-			
-		RequestDispatcher requestDispatchar= request.getRequestDispatcher("/main.jsp");
-		requestDispatchar.forward(request, response);
+		RequestDispatcher rd = request.getRequestDispatcher("/main.jsp");
+		rd.forward(request, response);
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
 
 	
 

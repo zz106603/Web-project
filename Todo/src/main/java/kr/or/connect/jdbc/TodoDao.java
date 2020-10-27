@@ -20,7 +20,7 @@ public class TodoDao {
 	private ResultSet rs = null;
 	
 
-	public List<TodoDto> getTodos(String type) {
+	public List<TodoDto> getTodos() {
 		
 		List<TodoDto> list = new ArrayList<TodoDto>();
 		
@@ -33,7 +33,6 @@ public class TodoDao {
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				if(type.equals(rs.getString(5))) {
 					int id = rs.getInt(1);
 					String title = rs.getString(2);
 					String name = rs.getString(3);
@@ -43,7 +42,6 @@ public class TodoDao {
 					regdate = regdate.substring(0, 10);
 					
 					list.add(new TodoDto(id,title,name,sequence,temptype,regdate));
-				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -114,17 +112,45 @@ public class TodoDao {
 	}
 	
 	
-	public int updateTodo(String type, int id) {
+	public int updateTodo(int id) {
 		int updateCount = 0;
+		String sql = "UPDATE todo SET type = 'DONE' WHERE type = 'DOING' AND id = ?";
+		String sql2 = "UPDATE todo SET type = 'DOING' WHERE type = 'TODO' AND id = ?";
 		
+		//DOING -> DONE
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			conn = DriverManager.getConnection(url, user, password);
-			
-			String sql = "UPDATE todo SET type=? WHERE id = ?";
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, type);
-			ps.setInt(2, id);
+			ps.setInt(1, id);
+			
+			updateCount = ps.executeUpdate();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(ps != null) {
+				try {
+					ps.close();
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(conn != null) {
+				try {
+					conn.close();
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//TODO -> DOING
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			conn = DriverManager.getConnection(url, user, password);
+			ps = conn.prepareStatement(sql2);
+			ps.setInt(1, id);
 			
 			updateCount = ps.executeUpdate();
 
@@ -148,6 +174,43 @@ public class TodoDao {
 		}
 		
 		return updateCount;
+		
+	}
+	
+	public int deleteTodo(int id) {
+		int deleteCount = 0;
+		String sql = "DELETE FROM todo WHERE id = ?";
+		
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			conn = DriverManager.getConnection(url, user, password);
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+			
+			deleteCount = ps.executeUpdate();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			if(ps != null) {
+				try {
+					ps.close();
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(conn != null) {
+				try {
+					conn.close();
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		
+		return deleteCount;
 		
 	}
 }
