@@ -32,7 +32,7 @@
 		<div id="table-align">
 
 			<!-- type이 "TODO"인 것만  -->
-			<section id="todo">
+			<section id="TODO">
 				<div class="todo-head">
 					<h2>TODO</h2>
 				</div>
@@ -51,7 +51,7 @@
 			</section>
 
 			<!-- type이 "DOING"인 것만  -->
-			<section id="doing">
+			<section id="DOING">
 				<div class="todo-head">
 					<h2>DOING</h2>
 				</div>
@@ -69,7 +69,7 @@
 			</section>
 
 			<!-- type이 "DONE"인 것만  -->
-			<section id="done">
+			<section id="DONE">
 				<div class="todo-head">
 					<h2>DONE</h2>
 				</div>

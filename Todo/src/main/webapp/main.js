@@ -29,7 +29,7 @@ function next(bid){
 				var msg = "";
 				for(value in json){
 					var todo = json[value];
-					var type = json['type']
+					var type = todo['type']
 
 					newSection = document.getElementById(type);
 					newSection.innerHTML = "<div class='todo-head'>" + "<h2>" + type + "</h2>" + "</div>";
