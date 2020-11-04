@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<div>
+    <form th:action="@{/todo/register.do}" th:object="${todo}" method="post" onsubmit="registerBoard(this)">
+
+        <input type="hidden" th:if="*{idx != null and idx > 0}" th:field = "*{idx}">
+
+        <div>
+            <label>공지글 설정</label>
+            <input type="checkbox" th:value="*{noticeYn}" id="noticeYn" name="noticeYn" th:checked="*{#strings.equals(noticeYn, 'Y')}" />
+        </div>
+        <div>
+            <label>비밀글 설정</label>
+            <input type="checkbox" th:value="*{secretYn}" id="secretYn" name="secretYn" th:checked="*{#strings.equals(secretYn, 'Y')}" />
+        </div>
+        <div>
+            <label>제목</label>
+            <input type="text" th:field="*{title}" placeholder="제목을 입력하세요." />
+        </div>
+        <div>
+            <label>이름</label>
+            <input type="text" th:field="*{writer}" placeholder="이름을 입력하세요." />
+        </div>
+        <div>
+            <label>내용</label>
+            <textarea th:field="*{content}" placeholder="내용을 입력하세요" />
+        </div>
+
+        <div>
+            <a th:href="@{/todo/list.do}">뒤로가기</a>
+            <button type="submit">저장하기</button>
+        </div>
+
+    </form>
+</div>
+
+<th:block layout:fragment="script">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    function registerBoard(form) {
+
+        form.noticeYn.value = form.noticeYn.checked == false ? 'N' : 'Y';
+        form.secretYn.value = form.secretYn.checked == false ? 'N' : 'Y';
+
+        var result = (
+            isValid(form.title, "제목", null, null)
+            && isValid(form.writer, "이름", null, null)
+            && isValid(form.content, "내용", null, null)
+        );
+
+        if ( result == false ) {
+            return false;
+        }
+    }
+    /*[- end of function -]*/
+
+    /*]]>*/
+</script>
+</th:block>
+
+</body>
+</html>
