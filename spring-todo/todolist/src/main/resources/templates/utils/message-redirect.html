@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{/scripts/common.js}"></script>
+</head>
+<body>
+
+<form th:if="${not #maps.isEmpty( todo )}" name="dataForm" th:action="${redirectUri}" th:method="${method}" style="display: none;">
+    <input th:each="key, status : ${todo.keySet()}" type="hidden" th:name="${key}" th:value="${todo.get(key)}" />
+</form>
+
+
+<script th:inline="javascript">
+
+    /* <![CDATA[ */
+
+    window.onload = function() {
+        var message = /*[[ ${message} ]]*/;
+        if (isEmpty(message) == false) {
+            alert(message);
+        }
+
+        var todo = /*[[ ${todo} ]]*/;
+        if (isEmpty(todo) == false) {
+            document.dataForm.submit();
+        } else {
+            var redirectUri = /*[[ ${redirectUri} ]]*/;
+            location.href = redirectUri;
+        }
+    }
+    /*[- end of onload -]*/
+
+    /* ]]> */
+
+</script>
+
+
+</body>
+</html>
