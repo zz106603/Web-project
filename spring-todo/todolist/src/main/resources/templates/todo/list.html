@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
     <style>
-        tr, td{
-            border : 1px solid black;
+        tr, td {
+            border: 1px solid black;
+        }
+        li{
+            display: inline;
+            text-decoration: none;
+            list-style: none;
         }
     </style>
 </head>
+
 <body>
+<h2><a th:href="@{/todo/list.do}">게시판</a></h2>
+
+
+<form th:action="@{/todo/write.do}" method="get">
+    <button type="submit">작성하기</button>
+</form>
 
 <table>
     <thead>
@@ -40,9 +49,26 @@
 </table>
 
 
-<form th:action="@{/todo/write.do}" method="get">
-    <button type="submit">작성하기</button>
-</form>
 
+<nav>
+    <ul>
+        <li>
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li>
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+
+    </ul>
+</nav>
 </body>
 </html>

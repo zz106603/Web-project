@@ -45,6 +45,7 @@ public class TodoServiceImpl implements TodoService{
     @Override
     public TodoDTO getTodoDetail(Long idx) {
         TodoDTO todoDTO = todoMapper.selectTodoDetail(idx);
+
         return todoDTO;
     }
 

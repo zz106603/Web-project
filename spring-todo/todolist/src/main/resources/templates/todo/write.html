@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+
+    <script th:src="@{/scripts/jquery.min.js}"></script>
+    <script th:src="@{/plugin/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js}"></script>
+
+    <script th:src="@{/scripts/main.js}"></script>
+    <script th:src="@{/scripts/common.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css}" />
+
 </head>
 <body>
 
+<h2><a th:href="@{/todo/list.do}">게시판</a></h2>
 
 <div>
-    <form th:action="@{/todo/register.do}" th:object="${todo}" method="post" onsubmit="registerBoard(this)">
+    <form th:action="@{/todo/register.do}" th:object="${todo}" method="post" onsubmit="return registerBoard(this)">
 
         <input type="hidden" th:if="*{idx != null and idx > 0}" th:field = "*{idx}">
 
@@ -43,6 +52,8 @@
 
 <th:block layout:fragment="script">
 <script th:inline="javascript">
+
+    //thymleaf
     /*<![CDATA[*/
 
     function registerBoard(form) {
@@ -51,9 +62,9 @@
         form.secretYn.value = form.secretYn.checked == false ? 'N' : 'Y';
 
         var result = (
-            isValid(form.title, "제목", null, null)
-            && isValid(form.writer, "이름", null, null)
-            && isValid(form.content, "내용", null, null)
+            isValid(form.title, "제목", null)
+            && isValid(form.writer, "이름", null)
+            && isValid(form.content, "내용", null)
         );
 
         if ( result == false ) {
