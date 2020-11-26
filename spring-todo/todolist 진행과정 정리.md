@@ -394,27 +394,27 @@
 
    - ```java
      	@Bean
-     	public SqlSessionFactory sqlSessionFactory() throws Exception {
-     		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-     		factoryBean.setDataSource(dataSource());
+       	public SqlSessionFactory sqlSessionFactory() throws Exception {
+       		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+       		factoryBean.setDataSource(dataSource());
              //getResource 메서드의 인자로 지정된 패턴에 포함하는 XML Mapper를 인식하도록 하는 역할
-     		factoryBean.setMapperLocations(applicationContext.getResources("classpath:/mappers/**/*Mapper.xml"));
+       		factoryBean.setMapperLocations(applicationContext.getResources("classpath:/mappers/**/*Mapper.xml"));
              /*
              	BoardMapper XML에서 parameterType과 resultType은 클래스의 풀 패키지 경로가 포함되어야 함
              	setTypeAliasesPackage을 사용해서 풀 패키지 경로를 생략 가능
              */
-     		factoryBean.setTypeAliasesPackage("com.board.domain");
-     		factoryBean.setConfiguration(mybatisConfg());
+       		factoryBean.setTypeAliasesPackage("com.board.domain");
+       		factoryBean.setConfiguration(mybatisConfg());
              
-     		return factoryBean.getObject();
-     	}
-     
-     	@Bean
-     	//properties파일에서 mybatis.configuration으로 시작하는 모든 설정을 읽어 Bean으로 등록
-     	@ConfigurationProperties(prefix = "mybatis.configuration")
-     	public org.apache.ibatis.session.Configuration mybatisConfg() {
-     		return new org.apache.ibatis.session.Configuration();
-     	}
+       		return factoryBean.getObject();
+       	}
+       
+       	@Bean
+       	//properties파일에서 mybatis.configuration으로 시작하는 모든 설정을 읽어 Bean으로 등록
+       	@ConfigurationProperties(prefix = "mybatis.configuration")
+       	public org.apache.ibatis.session.Configuration mybatisConfg() {
+       		return new org.apache.ibatis.session.Configuration();
+       	}
      ```
 
    
@@ -524,4 +524,256 @@
      }
      ```
 
+
+
+
+<h2>게시글 등록 구현하기</h2>
+
+- Service, View, Controller 영역 처리 
+
+
+
+1. <h4>서비스 처리하기</h4>
+
+   - BoardService 인터페이스 
+
+   - ```java
+     package com.board.service;
      
+     import java.util.List;
+     import com.board.domain.BoardDTO;
+     
+     public interface BoardService {
+     
+     	public boolean registerBoard(BoardDTO params); //참, 거짓
+     	public BoardDTO getBoardDetail(Long idx);
+     	public boolean deleteBoard(Long idx); //참, 거짓
+     	public List<BoardDTO> getBoardList();
+     
+     }
+     ```
+
+   - BoardServiceImpl 클래스
+
+   - ```java
+     package com.board.service;
+     
+     import java.util.Collections;
+     import java.util.List;
+     
+     import org.springframework.beans.factory.annotation.Autowired;
+     import org.springframework.stereotype.Service;
+     
+     import com.board.domain.BoardDTO;
+     import com.board.mapper.BoardMapper;
+     
+     @Service
+     public class BoardServiceImpl implements BoardSerivice{
+         
+         @Autowired
+         private BoardMapper boardMapper;
+         
+         @Override
+         public boolean registerBoard(BoardDTO params){
+             int queryRersult = 0;
+             
+             if(params.getIdx() == null){
+                 queryResult = boardMapper.insertBoard(params);
+             }else{
+                 queryResult = boardMapper.updateBoard(params);
+             }    
+             return (queryResult == 1) ? true : false;
+         }
+         
+         @Override
+         public BoardDTO getBoardDetail(Long idx){
+             return boardMapper.selectBoardDetail(idx);
+         }
+         
+         @Override
+         public boolean deleteBoard(Long idx){
+             int queryResult = 0;
+             
+     		BoardDTO board = boardMapper.selectBoardDetail(idx);
+             
+             if(board != null && board.getDeleteYn().equals("N")){
+                 queryResult = boardMapper.deleteBoard(idx);
+             }
+             return (queryResult == 1) ? true : false;
+         }
+         
+         @Override
+         public List<BoardDTO> getBoardList(){
+             List<BoardDTO> boardList = Collections.emptyList(); //NPE방지
+             
+             int boardTotalCount = boardMapper.selectBoardTotalCount();
+             if(boardTotalCount > 0){
+                 boardList = boardMapper.selectBoardList();
+             }
+             
+             return boardList;
+         }
+     }
+     ```
+
+     
+
+2. <h4>컨트롤러 처리하기</h4>
+
+   - BoardController 생성
+
+   - ```java
+     package com.board.controller;
+     
+     import org.springframework.beans.factory.annotation.Autowired;
+     import org.springframework.stereotype.Controller;
+     import org.springframework.ui.Model;
+     import org.springframework.web.bind.annotation.GetMapping;
+     
+     import com.board.service.BoardService;
+     
+     @Controller
+     public class BoardController{
+         
+         @Autowired
+         private BoardService boardService;
+         
+         @GetMapping(value = "/board/wirte.do")
+         public String openBoardWrite(@RequestParam(value = "idx", required = false) Long idx, Model model){
+     		if(idx == null){
+                 model.addAttribute("board", new BoardDTO());
+             }else{
+                 BoardDTO board = boardService.getBoardDetail(idx);
+                 if(board == null){
+                     return "redirect:/board/list.do";
+                 }
+                 model.addAttribute("board", board);
+             }
+             return "board/write";
+         }
+     }
+     ```
+
+     
+
+3. <h4>화면 처리하기</h4>
+
+   - 리턴타입으로 지정된 경로에 화면(HTML)을 생성
+
+   - write.html
+
+   - Tymeleaf 사용
+
+   - ```html
+     <html>
+     <form th:action="@{/board/register.do}" th:object="${board}" method="post" onsubmit="return registerBoard(this)">
+         <!-- /*update의 경우 서버로 전달한 게시글 번호(PK) */ -->
+         <input type="hidden" th:if="*{idx != null and idx > 0}" th:field="*{idx}" />
+         
+         <label for="noticeYn">공지글 설정</label>
+         <input type="checkbox" th:value="*{noticeYn}" id="noticeYn" name="noticeYn" th:checked="*{String.equals(noticeYn, 
+                                                                                                 'Y')}" />
+         <label for="secretYn">비밀글 설정</label>
+         <input type="checkbox" th:value="*{secretYn}" id="secretYn" name="secretYn" th:checked="*{String.equals(secretYn, 
+                                                                                                 'Y')}" />
+         <label for="title">제목</label>
+         <input type="text" th:field="*{title}" placeholder="제목을 입력해 주세요." />
+         
+         <label for="writer">작성자</label>
+         <input type="text" th:field="*{writer}" placeholder="이름을 입력해 주세요." />
+         
+         <label for="content">내용</label>
+         <textarea th:field="*{content}" placeholder="내용을 입력해 주세요." />
+         
+         <a href="@{/board/list.do}">뒤로가기</a>
+         <button type="submit">저장하기</button>
+     </form>
+     
+     <script th:inline="javascript">
+     	/*<![CDATA[*/
+         	fucntion registerBoard(form){
+                 form.noticeYn.value = form.noticeYn.checked == false ? 'N' : 'Y';
+                 form.secretYn.value = form.secretYn.checked == false ? 'N' : 'Y';
+                 
+                 var result = (
+                 					isValid(form.title, "제목", null, null)
+                     			&&	isValid(form.writer, "이름", null, null)
+                        			&&	isValid(form.content, "내용", null, null)
+                 );
+                 
+                 if(result == false){
+                     return false;
+                 }
+             }
+         /*]]>*/
+     </script>
+     </html>
+     ```
+
+
+
+4. <h4>등록 컨트롤러 추가</h4>
+
+   - th:action="@{/board/register.do}"에 지정한 메서드 작성
+
+   - ```java
+     @PostMapping(value="/board/register.do")
+     public String registerBoard(final BoardDTO params){
+         try{
+             boolean isRegisterd = boardService.registerBoard(params);
+             if(isRegisterd == false){
+                 //게시글 등록 실패
+             }catch(DataAccessException e){
+                 //db처리 과정 문제
+             }catch(Exception e){
+                 //시스템 문제
+             }
+             
+             return "redirect:/board/list.do";
+         }
+     }
+     ```
+
+
+
+<h2>게시글 리스트 구현하기</h2>
+
+1. <h4>컨트롤러 추가</h4>
+
+   - ```java
+     @GetMapping(value="/board/list.do")
+     public String openBoardList(Model model){
+         List<BoardDTO> boardList = boardService.getBoardList();
+         model.addAttribute("boardList", boardList);
+         
+         return "board/list";
+     }
+     ```
+
+     
+
+2. <h4>화면 추가</h4>
+
+   - list.html
+
+   - ```html
+     <html>
+         <tbody>
+             <tr th:if="${not #lists.isEmpty( boardList )}" th:each="row : ${boardList}">
+                 <td scope="row" th:text="${#strings.equals( row.noticeYn, 'Y') ? 공지 : row.idx}"></td>
+                 <td a th:href="@{/board/view.do( idx = ${row.idx} )}" th:text="${row.title}"></td>
+                 <td th:text="${row.writer}"></td>
+                 <td th:text="${#calendars.format( row.insertTime, 'yyyy-MM-dd' )}"></td>
+                 <td th:text="${row.viewCnt}"></td>
+             </tr>
+             <tr th:unless="${not #lists.isEmpty( boardList )}">
+             	<td colspan="5">조회된 결과가 없습니다.</td>
+             </tr>
+         </tbody>
+         
+         
+         
+     </html>
+     ```
+
+   - 
