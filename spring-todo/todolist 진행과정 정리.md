@@ -776,4 +776,299 @@
      </html>
      ```
 
+
+
+
+<h2>게시글 조회(상세 내용)</h2>
+
+1. <h4>컨트롤러 추가</h4>
+
+   - ```java
+     @GetMapping(value="/board/view.do")
+     public String openBoardDetail(@RequestParam(value="idx", required=false)Long idx, Model model){
+         if(idx == null){
+             //올바르지 않은 접근
+             return "redirect:/board/list.do";
+         }
+         BoardDTO board = boardService.getBoardDetail(idx);
+         if(board == null || board.getDeleteYn().equals("Y")){
+             //없는 게시글이나 이미 삭제된 게시글
+             return "redirect:/board/list.do";
+         }
+         
+         model.addAttribute("board", board);
+         
+         return "board/view";
+     }
+     ```
+
+2. <h4>화면 추가</h4>
+
+   - view.html
+
+   - ```html
+     <form th:object="${board}">
+     		<label >제목</label>
+     		<p th:text="*{title}"></p>
+     					
+     		<label>이름</label>
+     		<p th:text="*{writer}"></p>
+     
+         	<label>내용</label>
+     		<p th:text="*{content}"></p>
+     
+     		<label>등록일</label>
+     		<p th:text="*{#temporals.format( insertTime, 'yyyy-MM-dd' )}"></p>
+     
+     		<label>조회 수</label>
+     		<p th:text="*{viewCnt}"></p>
+     </form>
+     
+     		<a th:href="@{/board/list.do}" >뒤로가기</a>
+     		<a th:href="@{/board/write.do( idx=${board.idx} )}">수정하기</a>
+     		<button type="button" th:onclick="deleteBoard( [[ ${board.idx} ]])">
+             삭제하기
+     		</button>
+     </button>
+     ```
+
+
+
+<h2>게시글 삭제 구현</h2>
+
+1. <h4>컨트롤러 추가</h4>
+
+   - ```java
+     @PostMapping(value="/board/delete.do")
+     public String deleteBoard(@RequestParam(value="idx", required=false) Long idx){
+         if(idx == null){
+             //올바르지 않은 접근
+             return "redirect:/board/list.do"
+         }
+         
+         try{
+             boolean isDeleted = boardService.deleteBoard(idx);
+             if(isDeleted == false){
+                 //게시글 삭제 실패
+             }
+         }catch(DataAccessException e){
+             //db처리 과정 문제
+         }catch(Exception e){
+             //시스템 문제
+         }
+         
+         return "redirect:/board/list.do";
+     }
+     ```
+
+2. <h4>view.html 에 삭제 이벤트 처리</h4>
+
+   - ```html
+     <script th:inline="javascript">
+     			/*<![CDATA[*/
+     
+         		/* CDATA는 특수문자를 전부 문자열로 치환할 때 사용 */
+         
+     		function deleteBoard(idx) {
+     				if (confirm(idx + "번 게시글을 삭제할까요?")) {
+     					var uri = /*[[ @{/board/delete.do} ]]*/;
+     					var html = "";
+     	
+                     html += '<form name="dataForm" action="'+uri+'" method="post">';
+     				html += '<input type="hidden" name="idx" value="'+idx+'" />';
+     				html += '</form>';
+     
+     				$("body").append(html);
+     				document.dataForm.submit();
+     				}
+     			}
+     			/*[- end of function -]*/
+     
+     			/*]]>*/
+     </script>
+     <!-- value의 용도
+     	"hidden", "password", "text" : 입력 필드의 초깃값을 정의함. 
+     	"button", "reset", "submit" : 버튼 내의 텍스트를 정의함.
+     	"checkbox", "image", "redio" : 해당 입력 필드를 선택 시 서버로 제출되는 값을 정의함.
+     -->
+     ```
+
+
+
+<h2>컨트롤러에서 알러트 메시지 처리하기</h2>
+
+1. <h4>Enum 클래스 생성하기</h4>
+
+   - constant 패키지 추가
+
+     ```java
+     public enum Method{
+         GET, POST, PUT, PATCH, DELETE
+         //PUT, PATCH, DELETE는 REST API 방식에 사용
+     }
+     ```
+
+   
+
+2. <h4>공통 컨트롤러 생성하기</h4>
+
+   - util 패키지와 UiUtils 클래스 생성
+
+   - ```java
+     @Controller
+     public class UiUtils{
+         public String showMessageWithRedirect(@RequestParam(value = "message", required = false) String mseesge,
+                                               @RequestParam(value = "redirectUri", required = false) String redirectUri),
+     									      @RequestParam(value = "method", required = false) Method method,
+     									      @RequestParam(value = "params", required = false) Map<String, Object> params, 														Model model){
+                                                   model.addAttribute("message", message);
+     											  model.addAttribute("redirectUri", redirectUri);
+     											  model.addAttribute("method", method); //enun클래스에 선언한 HTTP요청 메서드
+     											  model.addAttribute("params", params);
+                                                   
+                                                   return "utils/message-redirect";
+                                               }
+     }
+     ```
+
+     
+
+3. <h4>HTML 처리하기</h4>
+
+   - templates 폴더에 utils 폴더를 추가하고, message-redirect.html 추가
+
+   - ```html
+     <html>
+         <form th:if="${not #maps.isEmpty( params )}" name="dateForm" th:action="${redirectUri}" th:method="${method}">
+             <input th:each="key, status : ${params.KeySet()}" type="hidden" th:name="${key}" th:value="${params.get(Key)}" />
+         </form>
+         
+         <script th:inline="javascript">
+             /* <![CDATA[ */
+             	
+             	window.onload = fucntion(){
+                     var message = /*[[ ${message} ]]*/;
+                     if(isEmpty(message) == false){
+                         alert(message);
+                     }
+                     
+                     var params = /*[[ ${params} ]]*/
+                     if(isEmpty(params) == false){
+                         document.dateForm.submit();
+                     }else{
+                         var redirectUri = /*[[ ${redirectUri} ]]*/
+                         location.href = redirectUri;
+                     }
+                 }
+         </script>
+     </html>
+     ```
+
+     
+
+4. <h4> BoardController 변경하기</h4>
+
+   - UiUtils를 상속
+
+   - ```java
+     //register 수정
+     @PostMapping(value="/board/register.do")
+     public String registerBoard(final BoardDTO params, Model model){
+         try{
+             boolean isRegistered = boardService.registerBoard(params);
+             if(isRegistered == false){
+     			return showMessageWithRedirect("게시글 등록에 실패하였습니다.", "/board/list.do", Method.GET, null, model);       
+         	}
+         }catch(DataAccessException e){
+             return showMessageWithRedirect("데이터베이스 처리 과정에 문제가 발생하였습니다.", "/board/list.do", Method.GET, null, model);
+     	} catch (Exception e) {
+     			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list.do", Method.GET, null, model);
+     	}
+         
+         return showMessageWithRedirect("게시글 등록이 완료되었습니다.", "/board/list.do", Method.GET, null, model);
+     }
+     ```
+
+   - ```java
+     //deleteBoard 수정
+     @PostMapping(value = "/board/delete.do")
+     	public String deleteBoard(@RequestParam(value = "idx", required = false) Long idx, Model model) {
+     		if (idx == null) {
+     			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/board/list.do", Method.GET, null, model);
+     		}
+     
+     		try {
+     			boolean isDeleted = boardService.deleteBoard(idx);
+     			if (isDeleted == false) {
+     				return showMessageWithRedirect("게시글 삭제에 실패하였습니다.", "/board/list.do", Method.GET, null, model);
+     			}
+     		} catch (DataAccessException e) {
+     			return showMessageWithRedirect("데이터베이스 처리 과정에 문제가 발생하였습니다.", "/board/list.do", Method.GET, null, model);
+     
+     		} catch (Exception e) {
+     			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list.do", Method.GET, null, model);
+     		}
+     
+     		return showMessageWithRedirect("게시글 삭제가 완료되었습니다.", "/board/list.do", Method.GET, null, model);
+     	}
+     ```
+
+
+
+<h2>Logback을 사용하여 쿼리 로그 출력하기</h2>
+
+
+
+1. <h4>logback-spring.xml 추가하기</h4>
+
+   - src/main/resources 디렉터리에 logback-spring.xml 추가
+
+   - ```xml
+     <?xml version="1.0" encoding="UTF-8"?>
+     <configuration debug="true">
+     
+         <!-- Appenders (어디에 출력할지 결정) -->
+         <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+         	<encoder>
+                 <!-- 로그 형식 지정 -->
+                 <Pattern>%d %5p [%c] %m%n</Pattern>
+             </encoder>
+         </appender>
+         
+         <appender name="console-infolog" class="ch.qos.logback.core.ConsoleAppender">
+         	<encoder>
+                 <Pattern>%d %5p %m%n</Pattern>
+             </encoder>
+         </appender>
+         
+         <!-- Logger (로그를 출력하는 요소) -->
+         <!--
+     	※ 로그의 레벨
+     		fatal : 아주 심각한 에러가 발생한 상태
+     		error : 요청을 처리하던 중 문제가 발생한 상태
+     		warn : 실행에는 문제가 없지만, 나중에 시스템 에러의 원인이 될 수 있는 경고성 메시지
+     		info : 어떠한 상태 변경과 같은 정보성 메시지
+     		debug : 개발 시에 디버그 용도로 사용하는 메시지
+     		trace : 디버그 레벨이 너무 광범위한 것을 해결하기 위해 좀 더 상세한 이벤트를 나타냄.
+     	※ 로그의 타입
+     		sqlonly : SQL을 로그로 남기며, Prepared Statement와 관련된 파라미터는 자동으로 변경되어 SQL 출력
+     		sqltiming : SQL과 SQL 실행 시간을 출력
+     		audit : ResultSet을 제외한 모든 JDBC 호출 정보를 출력 (JDBC관련 문제 추적하는 경우 제외하고 권장X)
+     		resultset : ResultSet을 포함한 모든 JDBC 호출 정보를 출력
+     		resultsettable : SQL 조회 결과를 테이블 형태로 출력
+     		connection : Connection의 연결과 종료에 관한 로그를 출력 (커넥션 누구 문제 해결에 도움)
+     	-->
+         <logger name="com.board" level="DEBUG" appender-ref="console" />
+         <logger name="jdbc.sqlonly" level="INFO" appender-ref="console-infolog" />
+         <logeer name="jdbc.resultsettable" level="INFO" appender-ref="console-infolog" />
+         
+         <!-- Root Logger -->
+         <root level="off">
+         	<appender-ref="console" />
+         </root>
+         
+     </configuration>
+        
+     ```
+
    - 
